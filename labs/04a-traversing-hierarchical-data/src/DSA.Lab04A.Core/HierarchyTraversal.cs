@@ -19,7 +19,13 @@ namespace DSA.Lab04A
             }
 
             // TODO: count this node, then count every child subtree.
-            throw new NotImplementedException();
+
+            int count = 1;
+            
+            foreach (var child in root.Children)
+                count  += CountNodes(child);
+            
+            return count;
         }
 
         public static bool Contains<T>(HierarchyNode<T> root, T target)
@@ -30,7 +36,24 @@ namespace DSA.Lab04A
             }
 
             // TODO: compare the current node, then search child subtrees.
-            throw new NotImplementedException();
+            
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+            
+            if (EqualityComparer<T>.Default.Equals(target, root.Value))
+            {
+                return true;
+            }
+
+            foreach (var child in root.Children)
+            {
+                if (Contains<T>(child, target))
+                    return true;
+            }
+            
+            return false;
         }
 
         public static IReadOnlyList<T> DepthFirstPreOrder<T>(HierarchyNode<T> root)
@@ -42,7 +65,15 @@ namespace DSA.Lab04A
 
             // TODO: return values in pre-order:
             // current node first, then each child subtree from left to right.
-            throw new NotImplementedException();
+            
+            List<T> result = new List<T>();
+            
+            result.Add(root.Value);
+            
+            foreach (var child in root.Children)
+                result.AddRange(DepthFirstPreOrder(child));
+
+            return result;
         }
 
         public static int MaxDepth<T>(HierarchyNode<T> root)
@@ -54,7 +85,17 @@ namespace DSA.Lab04A
 
             // Depth is measured in edges from the root.
             // A single-node tree therefore has max depth 0.
-            throw new NotImplementedException();
+            
+            int depth = 0;
+
+            foreach (var child in root.Children)
+            {
+                int childDepth = MaxDepth(child);
+                
+                depth = Math.Max(depth, childDepth + 1);
+            }
+
+            return depth;
         }
     }
 }
