@@ -128,5 +128,38 @@ namespace DSA.Lab04B.Tests
 
             Assert.That(items, Is.EquivalentTo(new[] { "A", "B", "C" }));
         }
+
+        [Test]
+        public void HeapQueue_MatchesLinearBaselineForMixedOperations()
+        {
+            var random = new Random(42);
+            var heap = new BinaryHeapDispatchQueue<int>();
+            var baseline = new LinearDispatchQueue<int>();
+
+            for (int step = 0; step < 1000; ++step)
+            {
+                bool enqueue = baseline.Count == 0 || random.Next(3) != 0;
+
+                if (enqueue)
+                {
+                    int priority = random.Next(0, 50);
+                    heap.Enqueue(step, priority);
+                    baseline.Enqueue(step, priority);
+                }
+                else
+                {
+                    Assert.That(heap.DequeueNext().Priority, Is.EqualTo(baseline.DequeueNext().Priority),$"Wrong minimum at step {step}");
+                }
+                
+                Assert.That(heap.Count, Is.EqualTo(baseline.Count));
+            }
+
+            while (baseline.Count > 0)
+            {
+                Assert.That(heap.DequeueNext().Priority, Is.EqualTo(baseline.DequeueNext().Priority));
+            }
+            
+            Assert.That(heap.Count, Is.EqualTo(0));
+        }
     }
 }

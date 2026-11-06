@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace DSA.Lab04B
 {
@@ -22,7 +23,9 @@ namespace DSA.Lab04B
             // TODO:
             // 1. Append the new entry at the end.
             // 2. Restore the heap invariant upward.
-            throw new NotImplementedException();
+            
+            _heap.Add(new PriorityEntry<T>(item, priority));
+            SiftUp(_heap.Count - 1);
         }
 
         public PriorityEntry<T> PeekNext()
@@ -43,13 +46,38 @@ namespace DSA.Lab04B
             // 3. Move the final heap entry to the root and remove the final slot.
             // 4. If anything remains, restore the invariant downward.
             // 5. Return the old root.
-            throw new NotImplementedException();
+            
+            if (_heap.Count <= 0)
+                throw new InvalidOperationException("The dispatch queue is empty.");
+            
+            var root = _heap[0];
+            
+            Swap(0, _heap.Count - 1);
+            _heap.RemoveAt(_heap.Count - 1);
+            
+            if (_heap.Count > 0) 
+                SiftDown(0);
+
+            return root;
         }
 
         private void SiftUp(int index)
         {
             // TODO: compare the entry with its parent and swap while needed.
-            throw new NotImplementedException();
+
+            while (index > 0)
+            {
+                var parentIndex = ParentIndex(index);
+
+                if (_heap[index].Priority >= _heap[parentIndex].Priority)
+                {
+                    break;
+                }
+                
+                Swap(index, parentIndex);
+                
+                index = parentIndex;
+            }
         }
 
         private void SiftDown(int index)
@@ -57,7 +85,26 @@ namespace DSA.Lab04B
             // TODO:
             // Compare the current entry with its children.
             // If a child should come first, swap with the smaller-priority child.
-            throw new NotImplementedException();
+
+            while (true)
+            {
+                var leftChildIndex = LeftChildIndex(index);
+                var rightChildIndex = RightChildIndex(index);
+                var smallestIndex = index;
+            
+                if (leftChildIndex < _heap.Count && _heap[leftChildIndex].Priority < _heap[smallestIndex].Priority)
+                    smallestIndex = leftChildIndex;
+            
+                if (rightChildIndex < _heap.Count && _heap[rightChildIndex].Priority < _heap[smallestIndex].Priority)
+                    smallestIndex = rightChildIndex;
+
+                if (smallestIndex == index)
+                    break;
+                
+                Swap(index, smallestIndex);
+                
+                index = smallestIndex;
+            }
         }
 
         private static int ParentIndex(int index)
