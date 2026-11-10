@@ -174,6 +174,22 @@ namespace DSA.Lab05.Tests
                 Is.True);
         }
 
+        // Protects the contract that unknown nodes are never reachable.
+        // Without a membership check, start == target short-circuits to true
+        // even though "Missing" does not exist in the graph.
+        [Test]
+        public void IsReachableBfs_MissingStartEqualsMissingTarget_IsFalse()
+        {
+            GraphFixture fixture = BuildExample();
+
+            Assert.That(
+                GraphTraversal.IsReachableBfs(
+                    fixture.Adjacency,
+                    "Missing",
+                    "Missing"),
+                Is.False);
+        }
+
         private static GraphFixture BuildExample()
         {
             string[] nodes =

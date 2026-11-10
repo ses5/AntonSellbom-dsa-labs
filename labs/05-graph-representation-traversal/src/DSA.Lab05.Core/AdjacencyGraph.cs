@@ -11,8 +11,7 @@ namespace DSA.Lab05
     /// </summary>
     public sealed class AdjacencyGraph
     {
-        private readonly Dictionary<string, List<string>> _neighborsByNode =
-            new Dictionary<string, List<string>>();
+        private readonly Dictionary<string, List<string>> _neighborsByNode = new Dictionary<string, List<string>>();
 
         public AdjacencyGraph(IEnumerable<string> nodes, IEnumerable<DirectedEdge> edges)
         {
@@ -45,6 +44,8 @@ namespace DSA.Lab05
 
                 // TODO:
                 // Add edge.To to the adjacency list belonging to edge.From.
+                
+                _neighborsByNode[edge.From].Add(edge.To);
             }
         }
 
