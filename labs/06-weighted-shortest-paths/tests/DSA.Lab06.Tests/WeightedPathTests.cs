@@ -129,6 +129,35 @@ namespace DSA.Lab06.Tests
             Assert.That(result.Found, Is.False);
         }
 
+        [Test]
+        public void Dijkstra_PrefersZeroCostDetourOverCheapDirectEdge()
+        {
+            // S -> T direkt kostar 1, men omvägen S -> M -> T kostar 0 + 0 = 0.
+            // T upptäcks först med kostnad 1 och förbättras sedan till 0.
+            WeightedNode[] nodes =
+            {
+                new WeightedNode("S", 0, 0),
+                new WeightedNode("M", 1, 0),
+                new WeightedNode("T", 2, 0)
+            };
+
+            WeightedEdge[] edges =
+            {
+                new WeightedEdge("S", "T", 1),
+                new WeightedEdge("S", "M", 0),
+                new WeightedEdge("M", "T", 0)
+            };
+
+            var graph = new WeightedGraph(nodes, edges);
+            var finder = new DijkstraRouteFinder();
+
+            RouteResult result = finder.FindRoute(graph, "S", "T");
+
+            Assert.That(result.Found, Is.True);
+            Assert.That(result.TotalCost, Is.EqualTo(0));
+            Assert.That(result.Path, Is.EqualTo(new[] { "S", "M", "T" }));
+        }
+
         [Test, Explicit("Optional Lab 6B / A* extension")]
         public void AStar_FindsSameLeastCostRouteAsDijkstra()
         {
